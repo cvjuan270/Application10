@@ -1,0 +1,72 @@
+﻿@model WebApplication10.Models.PaginaDePersonasViewModel
+@{
+    ViewBag.Title = "Home Page";
+    WebGrid grid = new WebGrid(rowsPerPage: Model.PersonasPorPagina);
+    grid.Bind(Model.Personas, autoSortAndPage: false, rowCount: Model.NumeroDePersonas);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Get))
+{
+    <fieldset>
+        <legend>Criterios de búsqueda</legend>
+        @Html.Label("buscar", "Texto:")
+        @Html.TextBox("buscar",null,htmlAttributes: new { @class="form-control"})
+        @Html.Label("hijosMin", "Hijos mín:")
+        @Html.TextBox("minHijos")
+        @Html.Label("maxHijos", "Hijos máx:")
+        @Html.TextBox("maxHijos")
+
+        <input type="submit" value="Buscar" />
+    </fieldset>
+}
+
+@grid.GetHtml(
+    fillEmptyRows: true,
+    alternatingRowStyle: "fila-alternativa",
+    headerStyle: "encabezado-grid",
+    footerStyle: "pie-grid",
+    mode: WebGridPagerModes.All,
+    firstText: "<< Primera",
+    previousText: "< Anterior",
+    nextText: "Siguiente >",
+    lastText: "Última >>",
+    columns: new[] {
+        grid.Column("Nombre", canSort: false),
+        //grid.Column("Apellidos"),
+        grid.Column("EMail",
+                     format: @<a href="mailto:@item.Email">@item.Email</a>
+),
+grid.Column("FechaNacimiento",
+header: "Fecha de nacimiento",
+format: p=>p.FechaNacimiento.ToShortDateString()
+),
+grid.Column("NumeroDeHijos",
+header: "Número de hijos",
+style: "a-la-derecha"
+),
+grid.Column("",
+header: "Acciones",
+format: @<text>
+    @*<div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Opciones
+        </button>
+            <div class="dropdown-menu">
+                @Html.ActionLink("Editar",   "Edit",   new { id=item.IdPersona},htmlAttributes: new {@class="dropdown-item" } )
+                @Html.ActionLink("Editar",   "Edit",   new { id=item.IdPersona},htmlAttributes: new {@class="dropdown-item" } )
+            </div>
+</div>*@
+    <div class="btn-group" >
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-boundary="window">
+            Dropdown button
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+    </div>
+                       
+</text>
+)
+})
